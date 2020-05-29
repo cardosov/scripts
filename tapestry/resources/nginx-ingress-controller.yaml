@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  proxy-buffer-size: 256k
+  proxy-buffers: 16 256k
+kind: ConfigMap
+metadata:
+  annotations:
+    control-plane.alpha.kubernetes.io/leader: '{"holderIdentity":"solution-control-plane-nginx-ingress-controller-m57ls","leaseDurationSeconds":30,"acquireTime":"2020-04-27T10:26:47Z","renewTime":"2020-04-27T10:30:50Z","leaderTransitions":0}'
+  creationTimestamp: "2020-04-27T10:26:47Z"
+  name: nginx-ingress-controller
+  namespace: nginx-ingress
+  resourceVersion: "2530407"
+  selfLink: /api/v1/namespaces/default/configmaps/ingress-controller-leader-nginx

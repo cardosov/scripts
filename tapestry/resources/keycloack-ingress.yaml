@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"extensions/v1beta1","kind":"Ingress","metadata":{"annotations":{"kubernetes.io/ingress.class":"nginx","nginx.ingress.kubernetes.io/backend-protocol":"HTTPS","nginx.ingress.kubernetes.io/ssl-passthrough":"true"},"name":"keycloak","namespace":"default"},"spec":{"rules":[{"host":"ldl-qa-millennium-21.dogfood.trylumada.com","http":{"paths":[{"backend":{"serviceName":"keycloak","servicePort":8443},"path":"/auth"}]}},{"http":{"paths":[{"backend":{"serviceName":"keycloak","servicePort":8443},"path":"/auth"}]}}]}}
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+  creationTimestamp: "2020-04-02T00:12:19Z"
+  generation: 9
+  labels:
+    keep: "true"
+  name: keycloak
+  namespace: default
+  resourceVersion: "14938536"
+  selfLink: /apis/extensions/v1beta1/namespaces/default/ingresses/keycloak
+spec:
+  rules:
+  - host: ldl-qa-millennium-21.dogfood.trylumada.com
+    http:
+      paths:
+      - backend:
+          serviceName: keycloak
+          servicePort: 8443
+        path: /auth
+  - http:
+      paths:
+      - backend:
+          serviceName: keycloak
+          servicePort: 8443
+        path: /auth
