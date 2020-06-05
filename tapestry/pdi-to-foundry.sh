@@ -8,12 +8,12 @@ usage() {
  cat <<EOF
   Usage: $PROGNAME [-c | --credentials ]=admin:pwd [-z | --zip-file ]=/some/where/file.zip ...
 
-  -c   | --credentials  	: sets the credentials
-  -z   | --zip-file     	: sets the zip file location
+  -c   | --credentials  	: sets the credentials for the metadata endpoint in "user:pwd" format
+  -z   | --zip-file     	: sets the local zip file location
   -e   | --entry-point  	: sets the entry point inside the zip
-  -p   | --provider-id  	: sets the provider
-  -w   | --provider-id-wn	: sets the provider id for the workernodes in foundry
-  -m   | --metadata-url		: sets the URL for the metadata generator endpoint
+  -p   | --provider-id  	: sets the provider. Defaults to 'pdi-ktr'
+  -w   | --provider-id-wn	: sets the provider id for the workernodes in foundry. Defaults to 'pdi-wn'
+  -m   | --metadata-url		: sets the URL for the metadata generator endpoint. Defaults to 'http://172.20.42.207:8080/pentaho/osgi/cxf/dataflow-manager/generator/zip'
   -f   | --foundry-url		: sets the URL for the foundry env
   -s   | --sso-client      	: sets the SSO client from Keycloak
   -ss  | --sso-secret      	: sets the SSO client secret from Keycloak
@@ -108,11 +108,11 @@ fi
 TOKEN=$( echo $TOKEN_DATA | jq -r .access_token ) # extract the token
 TOKEN_TYPE=$( echo $TOKEN_DATA | jq -r .token_type ) # extract the token_type
 
+  # --cookie 'request_uri=L2N4Zi9kYXRhZmxvdy1tYW5hZ2VyL2RhdGFmbG93cw%3D%3D; OAuth_Token_Request_State=b5ae3fc5-7536-417a-856d-c5fa07f7832f' \
 echo "=> Submit the dataflow to dataflow-manager @ $DOG_FOOD_ENV/dataflow-manager/api/dataflows"
 curl -v -X POST \
   -H "authorization: ${TOKEN_TYPE^} ${TOKEN}" \
   -H 'content-type: application/json' \
-  # --cookie 'request_uri=L2N4Zi9kYXRhZmxvdy1tYW5hZ2VyL2RhdGFmbG93cw%3D%3D; OAuth_Token_Request_State=b5ae3fc5-7536-417a-856d-c5fa07f7832f' \
   -d "${JSON}" \
   $DOG_FOOD_ENV/dataflow-manager/api/dataflows
 
