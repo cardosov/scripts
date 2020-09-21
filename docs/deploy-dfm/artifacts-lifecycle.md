@@ -1,4 +1,4 @@
-#Deploying DFS to an AWS cluster lifecycle
+# Deploying DFS to an AWS cluster lifecycle
 
 ![](imgs/deploy.png) 
 
@@ -84,7 +84,7 @@ When the above execution finishes, if successful, the different solutions, shoul
 
 ![](imgs/control-plane.png) 
 
-#Installing DFS on the cluster
+# Installing DFS on the cluster
 
 In your cluster's Control Plane ([https://ldl-dev-millennium-7b.dogfood.trylumada.com/](https://ldl-dev-millennium-7b.dogfood.trylumada.com/)), from the _**Solutions > Available**_ tab, proceed to install the solutions in such order:
 
@@ -237,7 +237,7 @@ Password: cXoEFfRsWx
 
 Data Flow Studio should be available at `http://<CLUSTER_NAME>.dogfood.trylumada.com/dataflow-manager`
 
-#Installing data flows in a Foundry enviroment
+# Installing data flows in a Foundry enviroment
 
 At this moment, there isn't an UI to achieve this goal. There are some documentation that explains how to this as manual steps. An effort was made to automate those steps.
 
@@ -263,7 +263,7 @@ An example of a command line might be:
 ```
 ./pdi-to-foundry.sh -z=/home/user/a-folder/all-types.zip -f=https://ldl-dev-millennium-7b.dogfood.trylumada.com -s=lumada-data-flow-studio-15234-sso-client -ss=6f8dbe7d-dc1f-44e2-9860-48ab947e017d
 ```
-#####How to retrieve the values for the `-s or --sso-client` and the `-ss or --sso-client-secret` arguments:
+##### How to retrieve the values for the `-s or --sso-client` and the `-ss or --sso-client-secret` arguments:
 
 1. You need to loggin to your `Keycloak` console (ex.: http://ldl-dev-millennium-7b.dogfood.trylumada.com/auth/admin);
 2. got to the `Clients` option of the left side bar;
