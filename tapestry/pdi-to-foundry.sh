@@ -89,19 +89,18 @@ fi
 JSON=$( echo ${JSON/$PROVIDER_ID/$PROVIDER_ID_FOUNDRY} ) # replace the providerId
 
 # Keycloak stuff 2
-KC_USER=admin
-KC_PWD=$(kubectl get secret/credential-keycloak -n hitachi-solutions -o jsonpath='{ .data.ADMIN_PASSWORD }' | base64 -d)
-KC_URL=$DOG_FOOD_ENV/hitachi-solutions/hscp-hitachi-solutions/keycloak/realms/default/protocol/openid-connect/token			
+KC_USER="foundry"
+KC_PWD=$(kubectl get keycloakusers -n hitachi-solutions keycloak-user -o jsonpath={.spec.user.credentials[0].value})
+KC_URL=$DOG_FOOD_ENV/hitachi-solutions/hscp-hitachi-solutions/keycloak/realms/default/protocol/openid-connect/token
 
-echo "=> Get the token from $KC_URL"
+
+echo "=> Get the token from $KC_URL $KC_PWD"
 TOKEN_DATA=$(
 	curl -X POST \
 		-u "$SSO_CLIENT:$SSO_CLIENT_SECRET" \
 	 	-d "grant_type=password&username=$KC_USER&password=$KC_PWD&scope=cn" \
 	 	--insecure \
 	 	$KC_URL )
-
-echo "****** $TOKEN_DATA"
 
 if [ -z "$TOKEN_DATA" ]; then
 	echo "No token received from $KC_URL"
@@ -111,16 +110,14 @@ fi
 TOKEN=$( echo $TOKEN_DATA | jq -r .access_token ) # extract the token
 TOKEN_TYPE=$( echo $TOKEN_DATA | jq -r .token_type ) # extract the token_type
 
-echo "****** $TOKEN"
-
   # --cookie 'request_uri=L2N4Zi9kYXRhZmxvdy1tYW5hZ2VyL2RhdGFmbG93cw%3D%3D; OAuth_Token_Request_State=b5ae3fc5-7536-417a-856d-c5fa07f7832f' \
 echo "=> Submit the dataflow to dataflow-manager @ $DOG_FOOD_ENV/dataflow-manager/api/dataflows"
-curl -v -X POST \
+curl -X POST \
   -H "authorization: ${TOKEN_TYPE^} ${TOKEN}" \
   -H 'content-type: application/json' \
   -d "${JSON}" \
   --insecure \
-  $DOG_FOOD_ENV/dataflow-manager/api/dataflows
+  $DOG_FOOD_ENV/hitachi-solutions/lumada-data-flow-studio-1600447865889/lumada-data-flow-studio-16889-app/cxf/dataflow-manager/dataflows
 
 
 echo "Success?..."
