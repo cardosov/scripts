@@ -2,7 +2,7 @@
 
 ### Assumptions
 
-- You are able to connect to `aws` clusters from the command line. Meaning , you have `awscli` and `okta` utils installed; you have `kubectl` also installed and all the necessary clusters configured in you `kubeconfig`. If not see:
+- You are able to connect to `aws` clusters from the command line. Meaning , you have `awscli` and `okta` utils installed; you have `kubectl` also installed and all the necessary clusters configured in you `kubeconfig`. If not, see:
 	- [http://gitlab.wal.hds.com/pteixeira/corellia/-/blob/acclamator_assault_ship-stable/CONTRIBUTING.md#authentication-into-aws-dogfood](https://insightgroup.atlassian.net/wiki/spaces/TPY/pages/1664746094/Data+Flow+Studio)
 	- [https://insightgroup.atlassian.net/wiki/spaces/TPY/pages/1354958049/Connecting+to+a+AWS+cluster](https://insightgroup.atlassian.net/wiki/spaces/TPY/pages/1664746094/Data+Flow+Studio)
 
