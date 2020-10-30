@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+ls#!/usr/bin/env bash
 
 set -eo pipefail
 
@@ -15,15 +15,13 @@ usage() {
   -w   | --provider-id-wn	: sets the provider id for the workernodes in foundry. Defaults to 'pdi-wn'
   -m   | --metadata-url		: sets the URL for the metadata generator endpoint. Defaults to 'http://172.20.42.207:8080/pentaho/osgi/cxf/dataflow-manager/generator/zip'
   -f   | --foundry-url		: sets the URL for the foundry env
-  -s   | --sso-client      	: sets the SSO client from Keycloak
-  -ss  | --sso-secret      	: sets the SSO client secret from Keycloak
   -h   | --help         	: displays this usage guide
 
 EOF
   exit 1
 }
 
-DOG_FOOD_ENV=http://ldl-dev-millennium-7b.dogfood.trylumada.com
+DOG_FOOD_ENV=http://localhost:3000
 
 #Metadata
 CREDENTIALS="admin:password"
@@ -32,10 +30,6 @@ ENTRY_POINT="all_types.ktr"
 PROVIDER_ID=pdi-ktr
 PROVIDER_ID_FOUNDRY=pdi-wn
 METADATA_URL=http://172.20.42.207:8080/pentaho/osgi/cxf/dataflow-manager/generator/zip
-
-# Keycloak stuff 1
-SSO_CLIENT="data-flow-studio-sso-client"
-SSO_CLIENT_SECRET="07396fa4-fef1-468d-af41-906727527efe"
 
 # get values from named args
 for key in "$@"
@@ -62,12 +56,6 @@ do
 		-f=*|--foundry-url=*)
 		DOG_FOOD_ENV="${key#*=}" && shift
 		;;
-		-s=*|--sso-client=*)
-		SSO_CLIENT="${key#*=}" && shift
-		;;
-		-ss=*|--sso-client-secret=*)
-		SSO_CLIENT_SECRET="${key#*=}" && shift
-		;;
 		-h|--help) usage
 		;;
 	esac
@@ -88,41 +76,12 @@ fi
 
 JSON=$( echo ${JSON/$PROVIDER_ID/$PROVIDER_ID_FOUNDRY} ) # replace the providerId
 
-echo $JSON > out.json
-
-# Keycloak stuff 2
-KC_USER="foundry"
-KC_PWD=$(kubectl get keycloakusers -n hitachi-solutions keycloak-user -o jsonpath={.spec.user.credentials[0].value})
-KC_URL=$DOG_FOOD_ENV/hitachi-solutions/hscp-hitachi-solutions/keycloak/realms/default/protocol/openid-connect/token
-
-echo "with pwd $KC_PWD"
-echo "=> Get the token from $KC_URL $KC_PWD"
-TOKEN_DATA=$(
-	curl -X POST \
-		-u "$SSO_CLIENT:$SSO_CLIENT_SECRET" \
-	 	-d "grant_type=password&username=$KC_USER&password=$KC_PWD&scope=cn" \
-	 	--insecure \
-	 	$KC_URL )
-
-if [ -z "$TOKEN_DATA" ]; then
-	echo "No token received from $KC_URL"
-	exit 2
-fi
-
-# echo $TOKEN_DATA
-
-TOKEN=$( echo $TOKEN_DATA | jq -r .access_token ) # extract the token
-TOKEN_TYPE=$( echo $TOKEN_DATA | jq -r .token_type ) # extract the token_type
-
-FULL_URL=$DOG_FOOD_ENV/hitachi-solutions/lumada-data-flow-studio-mlf/lumada-data-flow-studio-mlf-app/dataflow-manager/dataflows
+FULL_URL=$DOG_FOOD_ENV/cxf/dataflow-manager/dataflows
   # --cookie 'request_uri=L2N4Zi9kYXRhZmxvdy1tYW5hZ2VyL2RhdGFmbG93cw%3D%3D; OAuth_Token_Request_State=b5ae3fc5-7536-417a-856d-c5fa07f7832f' \
 echo "=> Submit the dataflow to dataflow-manager @ $FULL_URL"
 curl -X POST \
-  -H "authorization: ${TOKEN_TYPE^} ${TOKEN}" \
   -H 'content-type: application/json' \
   -d "${JSON}" \
   $FULL_URL
-
-
 
 echo "Success?..."
